@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import hexaware.sc.autoinsurance.AutoinsuranceApplicationTest;
+import hexaware.sc.autoinsurance.security.JWTUtil;
 import hexaware.sc.autoinsurance.web.model.ClaimDto;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -37,10 +39,14 @@ public class ClaimControllerTes extends AutoinsuranceApplicationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private JWTUtil jwtUtil;
+
     @Before
     public void setup() {
+        DecodedJWT decoded = jwtUtil.validateTokenAndRetrieveSubject("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJ1c2VyX3JvbGVfaWQiOjIsInVzZXJfZW1haWwiOiJlbGlhc211bmV0b25nQGdtYWlsLmNvbSIsInVzZXJfaWQiOjEsImlzcyI6ImF1dG9uaXN1cmFuY2UvSGV4YXdhcmUiLCJpYXQiOjE2NjczMjUxNjl9.k2x4W6G1D5oIZyvbnQV2khagRnGVyJrpTedLAuSOC2Y");
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                Long.valueOf(1), null, null);
+                decoded.getClaims(), null, null);
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
@@ -88,7 +94,8 @@ public class ClaimControllerTes extends AutoinsuranceApplicationTest {
     private ClaimDto createClaim() {
         ClaimDto claimDto = new ClaimDto();
         claimDto.setClaimSubjectId(Long.valueOf(3));
-        claimDto.setClaimStatusId(1);
+        claimDto.setClaimStatusId(Long.valueOf(1));
+        claimDto.setUserId(Long.valueOf(1));
         claimDto.setDescription("Prueba unitTest1");
         return claimDto;
     }
