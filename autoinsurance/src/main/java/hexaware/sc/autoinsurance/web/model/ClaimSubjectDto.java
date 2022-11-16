@@ -2,8 +2,11 @@ package hexaware.sc.autoinsurance.web.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class ClaimSubjectDto {
     
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty("claimSubjectId")
     private long claimSubjectId;
     

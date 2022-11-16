@@ -27,7 +27,7 @@ import hexaware.sc.autoinsurance.security.JWTUtil;
 import hexaware.sc.autoinsurance.web.model.ClaimDto;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ClaimControllerTes extends AutoinsuranceApplicationTest {
+public class ClaimControllerTest extends AutoinsuranceApplicationTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;

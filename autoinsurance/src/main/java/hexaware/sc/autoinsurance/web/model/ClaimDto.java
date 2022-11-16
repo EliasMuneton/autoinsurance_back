@@ -5,12 +5,16 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 public class ClaimDto {
     
-    
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    @JsonProperty("claimId")
     private long claimId;
     
+
     @JsonProperty("claimSubjectId")
     @NotNull
     private long claimSubjectId;
@@ -27,10 +31,11 @@ public class ClaimDto {
     private String description;
 
     
-
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty("claimSubject")
     private ClaimSubjectDto claimSubject;
     
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty("claimStatus")
     private ClaimStatusDto claimStatus;
 

@@ -22,9 +22,11 @@ import hexaware.sc.autoinsurance.domain.ClaimStatus;
 import hexaware.sc.autoinsurance.domain.ClaimSubject;
 import hexaware.sc.autoinsurance.domain.EmailSender;
 import hexaware.sc.autoinsurance.domain.Token;
+import hexaware.sc.autoinsurance.domain.User;
 import hexaware.sc.autoinsurance.repositories.ClaimRepository;
 import hexaware.sc.autoinsurance.repositories.ClaimStatusRepository;
 import hexaware.sc.autoinsurance.repositories.ClaimSubjectRepository;
+import hexaware.sc.autoinsurance.repositories.UserRepository;
 import hexaware.sc.autoinsurance.security.JWTUtil;
 import hexaware.sc.autoinsurance.web.mapper.ClaimMapper;
 import hexaware.sc.autoinsurance.web.model.ClaimDto;
@@ -36,6 +38,7 @@ public class ClaimServiceImpl implements ClaimService {
     private ClaimMapper claimMapper;
     private ClaimSubjectRepository claimSubjectRepository;
     private ClaimStatusRepository claimStatusRepository;
+    private UserRepository userRepository;
     private MailerService mailerService;
     private JWTUtil jwtUtil;
 
@@ -50,12 +53,17 @@ public class ClaimServiceImpl implements ClaimService {
     }
 
     @Autowired
-    public void setClaimSubjectMapper(ClaimSubjectRepository claimSubjectRepository) {
+    public void setClaimSubjectrepository(ClaimSubjectRepository claimSubjectRepository) {
         this.claimSubjectRepository = claimSubjectRepository;
     }
 
     @Autowired
-    public void setClaimStatusMapper(ClaimStatusRepository claimStatusRepository) {
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setClaimStatusRepositpry(ClaimStatusRepository claimStatusRepository) {
         this.claimStatusRepository = claimStatusRepository;
     }
 
@@ -89,22 +97,22 @@ public class ClaimServiceImpl implements ClaimService {
         claim = validStatusAndSubject(claim);
         claim.setCreatedAt(new Date());
         claim.setCreatedBy(tokenData.getUserId());
-        EmailSender emailSender = new EmailSender(tokenData.getEmail(), "You have been registered a claim  -- " +  claim.getClaimSubject().getDescription() +" -- " + claim.getDescription() , "Claim Register");
-        mailerService.sendEmail(emailSender);
+        EmailSender emailSender = new EmailSender(tokenData.getEmail(), "" , "Claim Register");
+        mailerService.sendEmailClaim(emailSender, claim, "Registered");
         return claimMapper.claimToClaimDto(claimRepository.save(claim));
     }
 
     @Override
     public ClaimDto updateClaim(ClaimDto claimDto, long id) throws Exception {
         Token tokenData = jwtUtil.geTokenData();
-        Claim claim =  claimRepository.findById(id).get();
-        
+        Optional<Claim> claimExist =  claimRepository.findById(id);
+        if (!claimExist.isPresent()) 
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,  "ID " + id + " not found");
+        Claim claim = claimExist.get();
         claim.setClaimStatusId(claimDto.getClaimStatusId());
         claim.setClaimSubjectId(claimDto.getClaimSubjectId());
         claim.setDescription(claimDto.getDescription());
-
         claim = validStatusAndSubject(claim);
-
         claim.setUpdatedAt(new Date());
         claim.setUpdatedBy(tokenData.getUserId());
         return claimMapper.claimToClaimDto(claimRepository.save(claim));
@@ -113,7 +121,10 @@ public class ClaimServiceImpl implements ClaimService {
     @Override
     public boolean deleteClaim(long id) throws Exception {
         Token tokenData = jwtUtil.geTokenData();
-        Claim claimById = claimRepository.findById(id).get();
+        Optional<Claim> claimByIdExist = claimRepository.findById(id);
+        if (!claimByIdExist.isPresent()) 
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,  "ID " + id + " not found");
+        Claim claimById = claimByIdExist.get();
         claimById.setDeletedAt(new Date());
         claimById.setDeletedBy(tokenData.getUserId());
         claimRepository.save(claimById);
@@ -126,12 +137,18 @@ public class ClaimServiceImpl implements ClaimService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "ID Subject " + claim.getClaimSubjectId() + " not found");
         claim.setClaimSubject(existClaimSubject.get());
-        Optional<ClaimStatus> existsClaimStatus = claimStatusRepository.findById(claim.getClaimStatusId());
 
+        Optional<ClaimStatus> existsClaimStatus = claimStatusRepository.findById(claim.getClaimStatusId());
         if (!existsClaimStatus.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "ID Status " + claim.getClaimStatusId() + " not found");
         claim.setClaimStatus(existsClaimStatus.get());
+
+        Optional<User> existUser = userRepository.findById(claim.getUserId());
+        if (!existUser.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "ID User " + claim.getUserId() + " not found");
+        claim.setUser(existUser.get());
         return claim;
     }
 

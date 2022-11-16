@@ -2,6 +2,7 @@ package hexaware.sc.autoinsurance.services;
 
 import org.springframework.stereotype.Service;
 
+import hexaware.sc.autoinsurance.domain.Claim;
 import hexaware.sc.autoinsurance.domain.EmailSender;
 import hexaware.sc.autoinsurance.helper.MailerHelper;
 
@@ -16,7 +17,8 @@ public class MailerServiceImpl  implements MailerService{
 
   @Async
   @Override
-  public void sendEmail(EmailSender emailSender) {
+  public void sendEmailClaim(EmailSender emailSender, Claim claim, String action) {
+    emailSender.setMsgBody(mailerHelper.htmlClaim(claim, action));
     mailerHelper.sendMail(emailSender);
   }
 }

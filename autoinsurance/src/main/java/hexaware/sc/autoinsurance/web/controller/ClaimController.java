@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import hexaware.sc.autoinsurance.services.ClaimServiceImpl;
 import hexaware.sc.autoinsurance.web.model.ClaimDto;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api/v1/claim")
+@SecurityRequirement(name = "token")
 public class ClaimController {
     
     private ClaimServiceImpl claimService;

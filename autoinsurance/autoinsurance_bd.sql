@@ -210,20 +210,20 @@ create table claim_subjects (
 
 INSERT INTO public.claim_subjects
 (description)
-VALUES('Insurance agent');
+VALUES('Minor accidents');
 
 INSERT INTO public.claim_subjects
 (description)
-VALUES('Call center');
+VALUES('Damage to a windshield');
 
 INSERT INTO public.claim_subjects
 (description)
-VALUES('Payments');
+VALUES('Acts of vandalism');
 
 
 INSERT INTO public.claim_subjects
 (description)
-VALUES('Sales');
+VALUES(' Theft of a vehicle');
 
 
 INSERT INTO public.claim_subjects

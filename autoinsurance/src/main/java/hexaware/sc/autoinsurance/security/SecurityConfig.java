@@ -1,7 +1,5 @@
 package hexaware.sc.autoinsurance.security;
 
-import hexaware.sc.autoinsurance.services.MyUserDetailsService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

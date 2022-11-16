@@ -3,10 +3,13 @@ package hexaware.sc.autoinsurance.web.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 public class ModelDto {
     
     
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty("modelId")
     private long modelId;
 
@@ -16,8 +19,9 @@ public class ModelDto {
     @JsonProperty("modelName")
     private String modelName;
 
-    @JsonProperty("Brand")
-    private BrandDto Brand;
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    @JsonProperty("brand")
+    private BrandDto brand;
 
 
     public long getModelId() {
@@ -39,11 +43,12 @@ public class ModelDto {
         this.modelName = modelName;
     }
     public BrandDto getBrand() {
-        return Brand;
+        return brand;
     }
     public void setBrand(BrandDto brand) {
-        Brand = brand;
+        this.brand = brand;
     }
+    
     
     
 

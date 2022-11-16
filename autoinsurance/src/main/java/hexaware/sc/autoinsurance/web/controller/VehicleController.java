@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import hexaware.sc.autoinsurance.services.VehicleServiceImpl;
 import hexaware.sc.autoinsurance.web.model.VehicleDto;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api/v1/vehicle")
+@SecurityRequirement(name = "token")
 public class VehicleController {
     
     private VehicleServiceImpl vehicleService;

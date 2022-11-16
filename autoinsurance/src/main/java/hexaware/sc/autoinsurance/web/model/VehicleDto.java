@@ -5,14 +5,15 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 
 public class VehicleDto {
     
     
-    
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty("vehicleId")
-    @NotNull
     private long vehicleId;
     
     @JsonProperty("userId")
@@ -37,13 +38,15 @@ public class VehicleDto {
     @JsonProperty("description")
     private String description;
     
-   
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty("model")
     private ModelDto model;
 
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty("color")
     private ColorDto color;
 
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @JsonProperty("user")
     private UserDto user;
 

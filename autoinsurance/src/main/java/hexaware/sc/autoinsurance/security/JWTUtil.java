@@ -23,12 +23,12 @@ public class JWTUtil {
     @Value("${jwt_secret}")
     private String secret;
 
-    public String generateToken(String email, Long id, Long user_role_id) throws IllegalArgumentException, JWTCreationException {
+    public String generateToken(String email, Long id, Long userRoleId) throws IllegalArgumentException, JWTCreationException {
         return JWT.create()
                 .withSubject("User Details")
                 .withClaim("user_email", email)
                 .withClaim("user_id", id)
-                .withClaim("user_role_id", user_role_id)
+                .withClaim("user_role_id", userRoleId)
                 .withIssuedAt(new Date())
                 .withIssuer("autonisurance/Hexaware")
                 .sign(Algorithm.HMAC256(secret));

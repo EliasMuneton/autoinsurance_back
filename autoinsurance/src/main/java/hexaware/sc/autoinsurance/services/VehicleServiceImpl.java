@@ -20,9 +20,11 @@ import org.springframework.web.server.ResponseStatusException;
 import hexaware.sc.autoinsurance.domain.Color;
 import hexaware.sc.autoinsurance.domain.Model;
 import hexaware.sc.autoinsurance.domain.Token;
+import hexaware.sc.autoinsurance.domain.User;
 import hexaware.sc.autoinsurance.domain.Vehicle;
 import hexaware.sc.autoinsurance.repositories.ColorRepository;
 import hexaware.sc.autoinsurance.repositories.ModelRepository;
+import hexaware.sc.autoinsurance.repositories.UserRepository;
 import hexaware.sc.autoinsurance.repositories.VehicleRepository;
 import hexaware.sc.autoinsurance.security.JWTUtil;
 import hexaware.sc.autoinsurance.web.mapper.VehicleMapper;
@@ -35,6 +37,7 @@ public class VehicleServiceImpl implements VehicleService {
     private VehicleRepository vehcileRepository;
     private ModelRepository modelRepositpory;
     private ColorRepository colorRepository;
+    private UserRepository userRepository;
     private VehicleMapper vehicleMapper;
     private JWTUtil jwtUtil;
 
@@ -53,6 +56,12 @@ public class VehicleServiceImpl implements VehicleService {
         this.colorRepository = colorRepository;
     }
 
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    
     @Autowired
     public void setVehicleMapper(VehicleMapper vehicleMapper) {
         this.vehicleMapper = vehicleMapper;
@@ -87,8 +96,10 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public VehicleDto updateVehicle(VehicleDto vehicleDto, long id) throws Exception {
         Token tokenData = jwtUtil.geTokenData();
-        Vehicle vehicle = vehcileRepository.findById(id).get();
-
+        Optional<Vehicle> vehicleExist = vehcileRepository.findById(id);
+        if (!vehicleExist.isPresent()) 
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,  "ID " + id + " not found");
+        Vehicle vehicle = vehicleExist.get();
         vehicle.setColorId(vehicleDto.getColorId());
         vehicle.setModelId(vehicleDto.getModelId());
         vehicle.setVehicleYear(vehicleDto.getVehicleYear());
@@ -103,7 +114,10 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public boolean deleteVehicle(long id) throws Exception {
         Token tokenData = jwtUtil.geTokenData();
-        Vehicle vehicleById = vehcileRepository.findById(id).get();
+        Optional<Vehicle> vehicleByIdExist = vehcileRepository.findById(id);
+        if (!vehicleByIdExist.isPresent()) 
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,  "ID " + id + " not found");
+        Vehicle vehicleById = vehicleByIdExist.get();
         vehicleById.setDeletedAt(new Date());
         vehicleById.setDeletedBy(tokenData.getUserId());
         vehcileRepository.save(vehicleById);
@@ -122,6 +136,12 @@ public class VehicleServiceImpl implements VehicleService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "ID Model " + vehcile.getModelId() + " not found");
         vehcile.setModel(existsVehicleModel.get());
+
+        Optional<User> existUser = userRepository.findById(vehcile.getUserId());
+        if (!existUser.isPresent())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "ID User " + vehcile.getUserId() + " not found");
+        vehcile.setUser(existUser.get());
         return vehcile;
     }
 
