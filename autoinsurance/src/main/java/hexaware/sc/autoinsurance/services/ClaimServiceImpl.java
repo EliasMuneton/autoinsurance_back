@@ -109,12 +109,19 @@ public class ClaimServiceImpl implements ClaimService {
         if (!claimExist.isPresent()) 
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,  "ID " + id + " not found");
         Claim claim = claimExist.get();
+        boolean isAttended = false;
+        if (claim.getClaimStatusId() == 1 && claimDto.getClaimStatusId() == 2) //Valid if claim status is attended
+            isAttended = true;
         claim.setClaimStatusId(claimDto.getClaimStatusId());
         claim.setClaimSubjectId(claimDto.getClaimSubjectId());
         claim.setDescription(claimDto.getDescription());
         claim = validStatusAndSubject(claim);
         claim.setUpdatedAt(new Date());
         claim.setUpdatedBy(tokenData.getUserId());
+        if (isAttended) {
+            EmailSender emailSender = new EmailSender(tokenData.getEmail(), "" , "Claim Attended");
+            mailerService.sendEmailClaim(emailSender, claim, "Attended");
+        }
         return claimMapper.claimToClaimDto(claimRepository.save(claim));
     }
 
