@@ -3,6 +3,8 @@ package hexaware.sc.autoinsurance.services;
 import java.util.Date;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import hexaware.sc.autoinsurance.web.mapper.ColorMapper;
 import hexaware.sc.autoinsurance.web.model.ColorDto;
 
 @Service
+@Transactional
 public class ColorServiceImpl implements ColorService {
 
     private ColorMapper colorMapper;

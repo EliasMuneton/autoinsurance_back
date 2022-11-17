@@ -11,17 +11,20 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import hexaware.sc.autoinsurance.domain.Claim;
 import hexaware.sc.autoinsurance.domain.Color;
 import hexaware.sc.autoinsurance.domain.Model;
 import hexaware.sc.autoinsurance.domain.Token;
 import hexaware.sc.autoinsurance.domain.User;
 import hexaware.sc.autoinsurance.domain.Vehicle;
+import hexaware.sc.autoinsurance.repositories.ClaimRepository;
 import hexaware.sc.autoinsurance.repositories.ColorRepository;
 import hexaware.sc.autoinsurance.repositories.ModelRepository;
 import hexaware.sc.autoinsurance.repositories.UserRepository;
@@ -31,6 +34,7 @@ import hexaware.sc.autoinsurance.web.mapper.VehicleMapper;
 import hexaware.sc.autoinsurance.web.model.VehicleDto;
 
 @Service
+@Transactional
 public class VehicleServiceImpl implements VehicleService {
 
     
@@ -38,6 +42,7 @@ public class VehicleServiceImpl implements VehicleService {
     private ModelRepository modelRepositpory;
     private ColorRepository colorRepository;
     private UserRepository userRepository;
+    private ClaimRepository claimRepository;
     private VehicleMapper vehicleMapper;
     private JWTUtil jwtUtil;
 
@@ -59,6 +64,12 @@ public class VehicleServiceImpl implements VehicleService {
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+
+    @Autowired
+    public void setClaimRepository(ClaimRepository claimRepository) {
+        this.claimRepository = claimRepository;
     }
 
     
@@ -121,6 +132,12 @@ public class VehicleServiceImpl implements VehicleService {
         vehicleById.setDeletedAt(new Date());
         vehicleById.setDeletedBy(tokenData.getUserId());
         vehcileRepository.save(vehicleById);
+        Iterable<Claim> claims = claimRepository.findAllByVehicleId(id);
+        claims.iterator().forEachRemaining(claim -> {
+            claim.setDeletedAt(new Date());
+            claim.setDeletedBy(tokenData.getUserId());
+        });
+        claimRepository.saveAll(claims);
         return true;
     }
 
@@ -171,7 +188,7 @@ public class VehicleServiceImpl implements VehicleService {
         
         Token tokenData = jwtUtil.geTokenData();
         if ( tokenData.getUserRolId() != 1) { // Valid user rol 1=Admin, 2=User
-            predicates.add(cb.equal(vehcile.get("userId"), tokenData.getUserId()));
+            predicates.add(cb.equal(vehcile.get("createdBy"), tokenData.getUserId()));
         }
        
         cq.where(predicates.toArray(new Predicate[0]));

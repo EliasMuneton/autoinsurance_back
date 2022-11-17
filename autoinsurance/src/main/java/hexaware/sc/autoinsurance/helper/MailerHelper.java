@@ -66,7 +66,7 @@ public class MailerHelper {
      + "         <p style='font-size:20px'>Auto Insurance Claim have been <b>" + action.toUpperCase() + "</b> </p> "
      + "       </center> "
      + "       <p style='font-size:17px'><b>Topic:</b> " + claim.getClaimSubject().getDescription() + "</p> "
-     + "       <p style='font-size:17px'><b>User:</b> " + claim.getUser().getFirstName() + " " + claim.getUser().getLastName() + "</p> "
+     + "       <p style='font-size:17px'><b>User:</b> " + claim.getVehicle().getUser().getFirstName() + " " + claim.getVehicle().getUser().getLastName() + "</p> "
      + "       <p style='font-size:17px'><b>Status:</b> " + claim.getClaimStatus().getDescription() + " </p> "
      + "     </div> "
      + "   </div> "

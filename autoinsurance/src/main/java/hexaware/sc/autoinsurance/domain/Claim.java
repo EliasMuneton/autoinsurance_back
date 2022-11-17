@@ -32,9 +32,6 @@ public class Claim {
     @Column(name="claim_status_id")
     private long claimStatusId;
 
-    @Column(name = "user_id")
-    private long userId;
-
     @Column(name = "vehicle_id")
     private long vehicleId;
 
@@ -66,10 +63,6 @@ public class Claim {
     @JoinColumn(name = "claim_status_id", insertable=false, updatable=false, nullable=false)
     @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private ClaimStatus claimStatus;
-
-    @JoinColumn(name = "user_id", insertable=false, updatable=false, nullable=false)
-    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private User user;
 
     @JoinColumn(name = "vehicle_id", insertable=false, updatable=false, nullable=false)
     @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -171,21 +164,6 @@ public class Claim {
         this.claimStatus = claimStatus;
     }
 
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public long getVehicleId() {
         return vehicleId;

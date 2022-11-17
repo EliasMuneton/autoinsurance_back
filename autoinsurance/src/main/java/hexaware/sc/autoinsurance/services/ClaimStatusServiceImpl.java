@@ -1,5 +1,7 @@
 package hexaware.sc.autoinsurance.services;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +10,7 @@ import hexaware.sc.autoinsurance.web.mapper.ClaimStatusMapper;
 import hexaware.sc.autoinsurance.web.model.ClaimStatusDto;
 
 @Service
+@Transactional
 public class ClaimStatusServiceImpl implements ClaimStatusService {
 
     private ClaimStatusMapper claimStatusMapper;

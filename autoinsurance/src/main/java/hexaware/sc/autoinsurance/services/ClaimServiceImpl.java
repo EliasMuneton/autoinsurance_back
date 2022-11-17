@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,15 +24,18 @@ import hexaware.sc.autoinsurance.domain.ClaimSubject;
 import hexaware.sc.autoinsurance.domain.EmailSender;
 import hexaware.sc.autoinsurance.domain.Token;
 import hexaware.sc.autoinsurance.domain.User;
+import hexaware.sc.autoinsurance.domain.Vehicle;
 import hexaware.sc.autoinsurance.repositories.ClaimRepository;
 import hexaware.sc.autoinsurance.repositories.ClaimStatusRepository;
 import hexaware.sc.autoinsurance.repositories.ClaimSubjectRepository;
 import hexaware.sc.autoinsurance.repositories.UserRepository;
+import hexaware.sc.autoinsurance.repositories.VehicleRepository;
 import hexaware.sc.autoinsurance.security.JWTUtil;
 import hexaware.sc.autoinsurance.web.mapper.ClaimMapper;
 import hexaware.sc.autoinsurance.web.model.ClaimDto;
 
 @Service
+@Transactional
 public class ClaimServiceImpl implements ClaimService {
 
     private ClaimRepository claimRepository;
@@ -39,6 +43,7 @@ public class ClaimServiceImpl implements ClaimService {
     private ClaimSubjectRepository claimSubjectRepository;
     private ClaimStatusRepository claimStatusRepository;
     private UserRepository userRepository;
+    private VehicleRepository vehicleRepository;
     private MailerService mailerService;
     private JWTUtil jwtUtil;
 
@@ -60,6 +65,11 @@ public class ClaimServiceImpl implements ClaimService {
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setVehicleRepository(VehicleRepository vehicleRepository) {
+        this.vehicleRepository = vehicleRepository;
     }
 
     @Autowired
@@ -119,7 +129,7 @@ public class ClaimServiceImpl implements ClaimService {
         claim.setUpdatedAt(new Date());
         claim.setUpdatedBy(tokenData.getUserId());
         if (isAttended) {
-            EmailSender emailSender = new EmailSender(tokenData.getEmail(), "" , "Claim Attended");
+            EmailSender emailSender = new EmailSender(claim.getVehicle().getUser().getEmail(), "" , "Claim Attended");
             mailerService.sendEmailClaim(emailSender, claim, "Attended");
         }
         return claimMapper.claimToClaimDto(claimRepository.save(claim));
@@ -151,11 +161,11 @@ public class ClaimServiceImpl implements ClaimService {
                     "ID Status " + claim.getClaimStatusId() + " not found");
         claim.setClaimStatus(existsClaimStatus.get());
 
-        Optional<User> existUser = userRepository.findById(claim.getUserId());
-        if (!existUser.isPresent())
+        Optional<Vehicle> existVehicle = vehicleRepository.findById(claim.getVehicleId());
+        if (!existVehicle.isPresent())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "ID User " + claim.getUserId() + " not found");
-        claim.setUser(existUser.get());
+                    "ID Vehicle " + claim.getVehicleId() + " not found");
+        claim.setVehicle(existVehicle.get());
         return claim;
     }
 
@@ -181,7 +191,7 @@ public class ClaimServiceImpl implements ClaimService {
 
         Token tokenData = jwtUtil.geTokenData();
         if ( tokenData.getUserRolId() != 1) {
-            predicates.add(cb.equal(claim.get("userId"), tokenData.getUserId()));
+            predicates.add(cb.equal(claim.get("createdBy"), tokenData.getUserId()));
         }
         
        

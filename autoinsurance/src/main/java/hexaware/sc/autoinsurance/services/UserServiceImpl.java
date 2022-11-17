@@ -3,6 +3,8 @@ package hexaware.sc.autoinsurance.services;
 import java.util.Date;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +17,7 @@ import hexaware.sc.autoinsurance.web.mapper.UserMapper;
 import hexaware.sc.autoinsurance.web.model.UserDto;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;

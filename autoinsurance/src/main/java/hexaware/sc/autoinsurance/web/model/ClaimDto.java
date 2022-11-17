@@ -19,9 +19,6 @@ public class ClaimDto {
     @NotNull
     private long claimSubjectId;
 
-    @JsonProperty("userId")
-    private long userId;
-
     @JsonProperty("vehicleId")
     private long vehicleId;
     
@@ -42,12 +39,9 @@ public class ClaimDto {
     @JsonProperty("claimStatus")
     private ClaimStatusDto claimStatus;
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    @JsonProperty("user")
-    private UserDto user;
-
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    
     @JsonProperty("vehicle")
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private VehicleDto vehicle;
 
     public long getClaimId() {
@@ -98,21 +92,6 @@ public class ClaimDto {
         this.claimStatus = claimStatus;
     }
 
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public UserDto getUser() {
-        return user;
-    }
-
-    public void setUser(UserDto user) {
-        this.user = user;
-    }
 
     public long getVehicleId() {
         return vehicleId;

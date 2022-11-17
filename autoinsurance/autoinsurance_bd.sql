@@ -236,7 +236,6 @@ create table claims (
 	claim_id serial primary key,
 	claim_subject_id int not null,
 	claim_status_id int not null default 1,
-	user_id int not null,
 	vehicle_id int not null,
 	description text not null,
 	created_at timestamp,
@@ -245,7 +244,6 @@ create table claims (
 	updated_by int,
 	deleted_at timestamp,
 	deleted_by int,
-	foreign key (user_id) references users (user_id),
 	foreign key (claim_subject_id) references claim_subjects (claim_subject_id),
 	foreign key (claim_status_id) references claim_status (claim_status_id),
 	foreign key (vehicle_id) references vehicles (vehicle_id)

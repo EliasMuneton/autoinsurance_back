@@ -13,7 +13,10 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 @Component
+@Transactional
 public class MyUserDetailsService implements UserDetailsService {
 
     private UserRepository userRepository;

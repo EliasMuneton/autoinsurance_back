@@ -95,7 +95,6 @@ public class ClaimControllerTest extends AutoinsuranceApplicationTest {
         ClaimDto claimDto = new ClaimDto();
         claimDto.setClaimSubjectId(Long.valueOf(3));
         claimDto.setClaimStatusId(Long.valueOf(1));
-        claimDto.setUserId(Long.valueOf(1));
         claimDto.setDescription("Prueba unitTest1");
         return claimDto;
     }
