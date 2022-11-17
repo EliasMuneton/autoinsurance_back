@@ -35,6 +35,9 @@ public class Claim {
     @Column(name = "user_id")
     private long userId;
 
+    @Column(name = "vehicle_id")
+    private long vehicleId;
+
     @Column(name = "description")
     private String description;
 
@@ -67,6 +70,10 @@ public class Claim {
     @JoinColumn(name = "user_id", insertable=false, updatable=false, nullable=false)
     @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private User user;
+
+    @JoinColumn(name = "vehicle_id", insertable=false, updatable=false, nullable=false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Vehicle vehicle;
 
     public long getClaimId() {
         return claimId;
@@ -178,6 +185,22 @@ public class Claim {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public long getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(long vehicleId) {
+        this.vehicleId = vehicleId;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
     }
 
     

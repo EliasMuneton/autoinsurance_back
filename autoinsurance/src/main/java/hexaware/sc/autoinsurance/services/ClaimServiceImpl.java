@@ -175,6 +175,10 @@ public class ClaimServiceImpl implements ClaimService {
             predicates.add(cb.equal(claim.get("claimSubjectId"), claimDto.getClaimSubjectId()));
         }
 
+        if (claimDto.getVehicleId() > 0) {
+            predicates.add(cb.equal(claim.get("vehicleId"), claimDto.getVehicleId()));
+        }
+
         Token tokenData = jwtUtil.geTokenData();
         if ( tokenData.getUserRolId() != 1) {
             predicates.add(cb.equal(claim.get("userId"), tokenData.getUserId()));
