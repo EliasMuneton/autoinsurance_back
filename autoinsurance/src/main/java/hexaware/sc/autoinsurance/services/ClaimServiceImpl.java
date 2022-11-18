@@ -23,12 +23,10 @@ import hexaware.sc.autoinsurance.domain.ClaimStatus;
 import hexaware.sc.autoinsurance.domain.ClaimSubject;
 import hexaware.sc.autoinsurance.domain.EmailSender;
 import hexaware.sc.autoinsurance.domain.Token;
-import hexaware.sc.autoinsurance.domain.User;
 import hexaware.sc.autoinsurance.domain.Vehicle;
 import hexaware.sc.autoinsurance.repositories.ClaimRepository;
 import hexaware.sc.autoinsurance.repositories.ClaimStatusRepository;
 import hexaware.sc.autoinsurance.repositories.ClaimSubjectRepository;
-import hexaware.sc.autoinsurance.repositories.UserRepository;
 import hexaware.sc.autoinsurance.repositories.VehicleRepository;
 import hexaware.sc.autoinsurance.security.JWTUtil;
 import hexaware.sc.autoinsurance.web.mapper.ClaimMapper;
@@ -42,7 +40,6 @@ public class ClaimServiceImpl implements ClaimService {
     private ClaimMapper claimMapper;
     private ClaimSubjectRepository claimSubjectRepository;
     private ClaimStatusRepository claimStatusRepository;
-    private UserRepository userRepository;
     private VehicleRepository vehicleRepository;
     private MailerService mailerService;
     private JWTUtil jwtUtil;
@@ -60,11 +57,6 @@ public class ClaimServiceImpl implements ClaimService {
     @Autowired
     public void setClaimSubjectrepository(ClaimSubjectRepository claimSubjectRepository) {
         this.claimSubjectRepository = claimSubjectRepository;
-    }
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
     }
 
     @Autowired

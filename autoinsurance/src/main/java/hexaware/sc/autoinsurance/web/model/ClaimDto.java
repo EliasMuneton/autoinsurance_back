@@ -39,9 +39,8 @@ public class ClaimDto {
     @JsonProperty("claimStatus")
     private ClaimStatusDto claimStatus;
 
-    
-    @JsonProperty("vehicle")
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    @JsonProperty("vehicle")
     private VehicleDto vehicle;
 
     public long getClaimId() {
